@@ -1,14 +1,5 @@
 import React, { Component} from 'react';
-
-const modalStyle = {
-  position: 'fixed',
-  top: 10,
-  bottom: 10,
-  left: 10,
-  right: 10,
-  backgroundColor: 'orchid',
-  textAlign: 'center'
-};
+import { connect } from 'react-redux';
 
 class QuestionModal extends Component {
   constructor(props) {
@@ -20,10 +11,22 @@ class QuestionModal extends Component {
 
   handleCheckAnswer() {
     const { clue } = this.props;
-    if (this.answer.toLowerCase() === clue.answer.toLowerCase()) {
-      return this.props.handleScoreUpdate(clue.value);
+    const isCorrect = this.answer.toLowerCase() === clue.answer.toLowerCase();
+
+    let action;
+    if (isCorrect) {
+      action = {
+        type: 'CORRECT_ANSWER',
+        payload: clue.value
+      };
+    } else {
+      action = {
+        type: 'INCORRECT_ANSWER',
+        payload: clue.value
+      };
     }
-    this.props.handleScoreUpdate(-clue.value);
+    this.props.dispatch(action);
+    this.props.handleScoreUpdate();
   }
 
   handleUpdatedAnswer(event) {
@@ -31,11 +34,16 @@ class QuestionModal extends Component {
   }
 
   render() {
+    let cn = "Modal";
+    if (this.props.clue) {
+      cn = "Modal Modal-shown";
+    }
+    let clue = this.props.clue || {category: {}};
     return (
-      <div style={modalStyle}>
-        <h1>{ this.props.clue.value }</h1>
-        <h2>{ this.props.clue.category.title }</h2>
-        <div>{ this.props.clue.question }</div>
+      <div className={cn}>
+        <h1>{ clue.value }</h1>
+        <h2>{ clue.category.title }</h2>
+        <div>{ clue.question }</div>
         <div>
           <input type="text"
                  placeholder="answer here..."
@@ -50,4 +58,4 @@ class QuestionModal extends Component {
 
 }
 
-export default QuestionModal;
+export default connect()(QuestionModal);
