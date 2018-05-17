@@ -3,7 +3,7 @@ import ClueSquare from './ClueSquare';
 
 const titleStyle = {
   width: '100px',
-  fontSize: '14px',
+  fontSize: '2em',
   fontWeight: 100,
   fontFamily: 'Arial Narrow'
 };
@@ -12,7 +12,11 @@ const ClueColumn = props => {
   return (
     <div>
       <div style={titleStyle}>{ props.category.title }</div>
-      { props.category.clues.map(x => <ClueSquare key={x.id} clue={x} />) }
+      { props.category.clues.map(x => (
+        <ClueSquare key={x.id}
+                    clue={x}
+                    handleClueSelection={props.handleClueSelection}/>
+      )) }
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import ClueColumn from './clue-column';
+import QuestionModal from './QuestionModal';
 
 import logo from './logo.svg';
 import './App.css';
@@ -8,6 +9,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = { categories: [] };
+    this.handleClueSelection = this.handleClueSelection.bind(this);
   }
 
   componentDidMount() {
@@ -21,12 +23,21 @@ class App extends Component {
       });
   }
 
+  handleClueSelection(clue) {
+    this.setState({ selectedClue: clue });
+  }
+
   render() {
     let body = null;
+    let modal = null;
     if (this.state.categories.length) {
       body = (
-        <ClueColumn category={this.state.categories[0]}/>
+        <ClueColumn category={this.state.categories[0]}
+                    handleClueSelection={this.handleClueSelection}/>
       );
+    }
+    if (this.state.selectedClue) {
+      modal = <QuestionModal clue={this.state.selectedClue}/>;
     }
     return (
       <div className="App">
@@ -34,6 +45,7 @@ class App extends Component {
           <img src={logo} className="App-logo" alt="logo" />
         </header>
         { body }
+        { modal }
       </div>
     );
   }
