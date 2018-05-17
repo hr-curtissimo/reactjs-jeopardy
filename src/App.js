@@ -8,8 +8,9 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { categories: [] };
+    this.state = { categories: [], score: 0 };
     this.handleClueSelection = this.handleClueSelection.bind(this);
+    this.handleScoreUpdate = this.handleScoreUpdate.bind(this);
   }
 
   componentDidMount() {
@@ -27,6 +28,13 @@ class App extends Component {
     this.setState({ selectedClue: clue });
   }
 
+  handleScoreUpdate(amount) {
+    this.setState({
+      score: this.state.score + amount,
+      selectedClue: null
+    });
+  }
+
   render() {
     let body = null;
     let modal = null;
@@ -37,13 +45,17 @@ class App extends Component {
       );
     }
     if (this.state.selectedClue) {
-      modal = <QuestionModal clue={this.state.selectedClue}/>;
+      modal = (
+        <QuestionModal handleScoreUpdate={this.handleScoreUpdate}
+                       clue={this.state.selectedClue}/>
+      );
     }
     return (
       <div className="App">
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
         </header>
+        <h1>Score: ${ this.state.score }</h1>
         { body }
         { modal }
       </div>

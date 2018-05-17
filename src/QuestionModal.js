@@ -13,15 +13,17 @@ const modalStyle = {
 class QuestionModal extends Component {
   constructor(props) {
     super(props);
+    this.answer = '';
     this.handleCheckAnswer = this.handleCheckAnswer.bind(this);
     this.handleUpdatedAnswer = this.handleUpdatedAnswer.bind(this);
   }
 
   handleCheckAnswer() {
-    if (this.answer.toLowerCase() === this.props.clue.answer.toLowerCase()) {
-      return console.log('you win')
+    const { clue } = this.props;
+    if (this.answer.toLowerCase() === clue.answer.toLowerCase()) {
+      return this.props.handleScoreUpdate(clue.value);
     }
-    console.log('you lose')
+    this.props.handleScoreUpdate(-clue.value);
   }
 
   handleUpdatedAnswer(event) {
