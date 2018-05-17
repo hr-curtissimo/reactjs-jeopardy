@@ -1,5 +1,6 @@
 import React from 'react';
 import ClueSquare from './ClueSquare';
+import ZombieSquare from './zombie-square';
 
 const titleStyle = {
   width: '100px',
@@ -13,6 +14,8 @@ const ClueColumn = props => {
     <div>
       <div style={titleStyle}>{ props.category.title }</div>
       { props.category.clues.map(x => (
+        x.used ?
+        <ZombieSquare key={x.id} /> :
         <ClueSquare key={x.id}
                     clue={x}
                     handleClueSelection={props.handleClueSelection}/>
