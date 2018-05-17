@@ -1,0 +1,11 @@
+.ClueSquare {
+  align-items: center;
+  background-color: darkorchid;
+  color: white;
+  display: flex;
+  font-size: 3em;
+  height: 100px;
+  justify-content: center;
+  margin-top: 10px;
+  width: 100px;
+}
