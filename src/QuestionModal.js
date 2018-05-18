@@ -1,56 +1,57 @@
 import React, { Component} from 'react';
 import { connect } from 'react-redux';
+import { closeAnswerModal, correctAnswer, incorrectAnswer, playerAnswerUpdated } from './store/actions';
+import { AnswerState } from './store/reducer';
 
 class QuestionModal extends Component {
   constructor(props) {
     super(props);
-    this.answer = '';
     this.handleCheckAnswer = this.handleCheckAnswer.bind(this);
     this.handleUpdatedAnswer = this.handleUpdatedAnswer.bind(this);
   }
 
   handleCheckAnswer() {
     const { clue } = this.props;
-    const isCorrect = this.answer.toLowerCase() === clue.answer.toLowerCase();
+    const isCorrect = this.props.answer.toLowerCase() === clue.answer.toLowerCase();
 
     let action;
     if (isCorrect) {
-      action = {
-        type: 'CORRECT_ANSWER',
-        payload: clue.value
-      };
+      action = correctAnswer(clue.value);
     } else {
-      action = {
-        type: 'INCORRECT_ANSWER',
-        payload: clue.value
-      };
+      action = incorrectAnswer(clue.value);
     }
     this.props.dispatch(action);
-    this.props.handleScoreUpdate();
+    setTimeout((() => this.props.dispatch(closeAnswerModal())), 3000);
   }
 
   handleUpdatedAnswer(event) {
-    this.answer = event.target.value;
+    this.props.dispatch(playerAnswerUpdated(event.target.value));
   }
 
   render() {
     let cn = "Modal";
-    if (this.props.clue) {
+    if (this.props.showAnswerModal) {
       cn = "Modal Modal-shown";
     }
     let clue = this.props.clue || {category: {}};
     return (
       <div className={cn}>
-        <h1>{ clue.value }</h1>
-        <h2>{ clue.category.title }</h2>
-        <div>{ clue.question }</div>
-        <div>
+        <div className="QuestionModal-question">{ clue.question }</div>
+        <div className="QuestionModal-answer">
+          <span className="QuestionModal-answer-prefix">
+            What is
+          </span>
           <input type="text"
+                 className="QuestionModal-answer-input"
                  placeholder="answer here..."
+                 value={this.props.answer}
                  onChange={this.handleUpdatedAnswer}/>
+          <button disabled={!this.props.unanswered} onClick={this.handleCheckAnswer}
+                  className="QuestionModal-answer-button">Submit</button>
         </div>
-        <div>
-          <button onClick={this.handleCheckAnswer}>What is...?</button>
+        <div className="QuestionModal-result">
+          { this.props.correct ? <div>CORRECT!</div> : null }
+          { this.props.incorrect ? <div>The correct answer is "{this.props.clue.answer}"</div> : null }
         </div>
       </div>
     )
@@ -58,4 +59,15 @@ class QuestionModal extends Component {
 
 }
 
-export default connect()(QuestionModal);
+const mapStateToProps = state => {
+  return {
+    answer: state.playersAnswer,
+    correct: state.answerState === AnswerState.CORRECT,
+    incorrect: state.answerState === AnswerState.INCORRECT,
+    clue: state.selectedClue || {},
+    showAnswerModal: state.showAnswerModal,
+    unanswered: state.answerState === AnswerState.UNANSWERED,
+  };
+};
+
+export default connect(mapStateToProps)(QuestionModal);

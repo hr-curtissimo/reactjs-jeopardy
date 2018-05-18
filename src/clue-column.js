@@ -16,9 +16,7 @@ const ClueColumn = props => {
       { props.category.clues.map(x => (
         x.used ?
         <ZombieSquare key={x.id} /> :
-        <ClueSquare key={x.id}
-                    clue={x}
-                    handleClueSelection={props.handleClueSelection}/>
+        <ClueSquare key={x.id} clue={x}/>
       )) }
     </div>
   );

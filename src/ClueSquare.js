@@ -1,9 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { clueSelected } from './store/actions';
 
 import './clue-square.css';
 
 const ClueSquare = props => {
-  const onClickHandler = () => props.handleClueSelection(props.clue);
+  const onClickHandler = () => props.dispatch(clueSelected(props.clue))
 
   return (
     <div className="ClueSquare"
@@ -13,4 +15,4 @@ const ClueSquare = props => {
   )
 };
 
-export default ClueSquare;
+export default connect()(ClueSquare);
